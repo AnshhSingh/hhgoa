@@ -56,3 +56,52 @@ Once candidate images are downloaded from the web, the system uses the `face_rec
 1. **Similarity Verification**: It compares the original face encoding to the candidate encodings using a configurable distance threshold (default is 0.6).
 2. **Privacy Focus**: The pipeline strictly performs **similarity verification** ("Is this the same face?"). It does **not** perform identity identification, and it will never attempt to attach a name or real-world identity to a face.
 3. **Best Match Selection**: The pipeline compares all candidates and selects the single strongest match (the face with the smallest distance) to record as verified evidence.
+
+### 4. Blockchain Verification
+Once a candidate has been fully verified and its `ContentFingerprint` is deterministically generated, the pipeline can record this fingerprint on an EVM-compatible blockchain.
+
+#### Step-by-Step Blockchain Workflow
+
+**1. Start Anvil (Local Blockchain)**
+Open a new terminal and start the local node:
+```bash
+anvil
+```
+
+**2. Deploy the Contract**
+You can deploy using Foundry, or use the Python module if you have compiled the ABI via `forge build`.
+Using Foundry (recommended):
+```bash
+cd contracts
+forge build
+forge script Deploy.s.sol --rpc-url http://127.0.0.1:8545 --broadcast
+```
+
+**3. Configure `.env`**
+Create a `.env` file in the project root containing your API keys, the Anvil RPC, and the deployed contract address:
+```env
+SERPAPI_API_KEY=your_serpapi_key
+RPC_URL=http://127.0.0.1:8545
+PRIVATE_KEY=0x... (use one from anvil's output)
+CONTRACT_ADDRESS=0x... (the address output by the deployment script)
+```
+
+**4. Register Content**
+In a Python script or via the Python shell:
+```python
+from app.models import ContentFingerprint
+from app.blockchain import register_content
+
+fingerprint = ContentFingerprint(...) # From create_content_fingerprint()
+receipt = register_content(fingerprint)
+print(f"Recorded in block {receipt.block_number}")
+```
+
+**5. Verify Content**
+To verify a local fingerprint against the immutable blockchain record:
+```python
+from app.blockchain import verify_content
+
+result = verify_content(fingerprint)
+print(result.status) # "VERIFIED" or "MISSING"
+```
