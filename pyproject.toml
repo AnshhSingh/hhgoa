@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "face-to-web-blockchain"
+version = "0.1.0"
+description = "Face-to-Web Blockchain Verification Pipeline"
+requires-python = ">=3.11"
+dependencies = [
+    "typer>=0.12.3",
+    "pydantic>=2.7.1",
+    "python-dotenv>=1.0.1",
+    "face_recognition>=1.3.0",
+    "numpy>=1.26.4",
+    "requests>=2.31.0",
+    "beautifulsoup4>=4.12.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2.0",
+]
+
+[project.scripts]
+face-pipeline = "main:app"
