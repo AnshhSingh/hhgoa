@@ -45,6 +45,25 @@ def run_pipeline(input_image: str) -> PipelineResult:
         verification = verify_content(fingerprint)
         result.onchain_verification = verification.status
         
+        # 15. Produce structured result
+        import json
+        import uuid
+        import os
+        
+        filename = f"data/results/verification_{uuid.uuid4().hex}.json"
+        os.makedirs("data/results", exist_ok=True)
+        
+        saved_data = {
+            "original_content_hash": fingerprint.content_hash,
+            "candidate": candidate.model_dump(),
+            "blockchain_receipt": receipt.model_dump()
+        }
+        
+        with open(filename, "w") as f:
+            json.dump(saved_data, f, indent=4)
+            
+        result.result_file = filename
+        
     except Exception as e:
         result.error_message = str(e)
         

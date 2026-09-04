@@ -68,3 +68,4 @@ class PipelineResult(BaseModel):
     block_number: Optional[int] = None
     onchain_verification: Optional[str] = None
     error_message: Optional[str] = None
+    result_file: Optional[str] = None

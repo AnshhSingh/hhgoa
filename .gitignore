@@ -10,3 +10,18 @@ data/input/*
 !data/input/.gitkeep
 data/results/*
 !data/results/.gitkeep
+contracts/out/*
+contracts/broadcast/
+bin/*
+
+# Python
+.pytest_cache/
+*.whl
+
+# Foundry
+contracts/cache/
+
+# OS / IDE
+.vscode/
+.idea/
+.DS_Store

@@ -1,4 +1,5 @@
 import face_recognition
+import numpy as np
 from app.models import FaceResult
 
 def process_face(image_path: str) -> FaceResult:
@@ -7,6 +8,13 @@ def process_face(image_path: str) -> FaceResult:
     """
     try:
         image = face_recognition.load_image_file(image_path)
+        # Ensure image is 8-bit RGB to prevent dlib "Unsupported image type" errors
+        if image.dtype != 'uint8':
+            # Scale 16-bit to 8-bit if necessary, or just cast
+            if image.dtype == 'uint16':
+                image = (image / 256).astype(np.uint8)
+            else:
+                image = image.astype(np.uint8)
     except FileNotFoundError:
         raise ValueError(f"Image not found at path: {image_path}")
     except Exception as e:
