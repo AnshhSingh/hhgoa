@@ -10,12 +10,27 @@ def match_candidate(reference_encoding: list[float], candidate_path: str, thresh
     """
     try:
         image = face_recognition.load_image_file(candidate_path)
-    except Exception:
+        # Ensure image is 8-bit RGB to prevent dlib "Unsupported image type" errors
+        if image.dtype != 'uint8':
+            if image.dtype == 'uint16':
+                image = (image / 256).astype(np.uint8)
+            else:
+                image = image.astype(np.uint8)
+    except FileNotFoundError:
         return MatchResult(
             is_match=False,
             distance=1.0,
             threshold=threshold,
-            matched_face_index=None,
+            matched_face_index=-1,
+            candidate_path=candidate_path
+        )
+    except Exception:
+        # Failsafe for unreadable images
+        return MatchResult(
+            is_match=False,
+            distance=1.0,
+            threshold=threshold,
+            matched_face_index=-1,
             candidate_path=candidate_path
         )
         

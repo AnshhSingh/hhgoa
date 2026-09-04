@@ -36,3 +36,36 @@ class MatchResult(BaseModel):
     threshold: float
     matched_face_index: Optional[int] = None
     candidate_path: str
+
+class ContentFingerprint(BaseModel):
+    content_hash: str
+    image_hash: str
+    source_url: str
+    title: str
+    source: str
+    timestamp: str
+
+class BlockchainReceipt(BaseModel):
+    transaction_hash: str
+    block_number: int
+    contract_address: str
+    content_hash: str
+
+class VerificationResult(BaseModel):
+    status: str
+    message: str
+    onchain_timestamp: Optional[int] = None
+    onchain_source_url: Optional[str] = None
+    onchain_submitter: Optional[str] = None
+
+class PipelineResult(BaseModel):
+    face_detected: bool = False
+    search_completed: bool = False
+    candidate_found: bool = False
+    face_match: bool = False
+    content_hash: Optional[str] = None
+    blockchain_tx: Optional[str] = None
+    block_number: Optional[int] = None
+    onchain_verification: Optional[str] = None
+    error_message: Optional[str] = None
+    result_file: Optional[str] = None
